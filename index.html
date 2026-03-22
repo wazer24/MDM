@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SmartCart - FreshMart Superstore Self-Service Terminal. Place items in cart, RFID auto-detects, Pay & Go.">
+    <title>SmartCart – FreshMart Superstore</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SCREEN 1 : HOME / DASHBOARD                    -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="screen-home" class="screen active">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-left">
+            <span class="status-dot"></span>
+            <span class="status-text">ONLINE</span>
+            <span class="status-sep">📶</span>
+            <span class="status-text">Connected</span>
+        </div>
+        <div class="status-right">
+            <span class="status-text">Session: <span id="session-id">SC-XXXXX</span></span>
+            <span class="status-battery">🔋</span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="home-header">
+        <div class="header-left">
+            <div class="header-logo">
+                <span class="logo-icon">🛒</span>
+                <span class="logo-badge">✦</span>
+            </div>
+            <div class="header-text">
+                <h1 class="brand-name">SmartCart</h1>
+                <p class="brand-sub">FreshMart Superstore · Cart Terminal #07</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <div id="live-clock" class="clock-display">
+                <span class="clock-time">10:53</span>
+                <span class="clock-ampm">pm</span>
+            </div>
+            <p id="live-date" class="clock-date">Sunday, 22 March 2026</p>
+        </div>
+    </div>
+
+    <!-- Banner -->
+    <div class="store-banner">
+        <div class="banner-left">
+            <h2 class="banner-title">FreshMart Smart Shopping</h2>
+            <p class="banner-sub">Place items in cart · RFID auto-detects · Pay & Go</p>
+        </div>
+        <div class="banner-right">
+            <div class="store-status" id="store-status">
+                <span class="store-dot"></span>
+                <span class="store-label">Store Open</span>
+            </div>
+            <p class="store-hours">9:00 AM – 10:00 PM</p>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="home-search-wrap">
+        <div class="search-bar" id="home-search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="home-search-input" placeholder="Search products, brands, categories..." autocomplete="off">
+            <button class="search-btn" id="home-search-btn">Search</button>
+        </div>
+    </div>
+
+    <!-- Feature Cards -->
+    <div class="feature-cards">
+        <div class="feature-card" id="card-smart-search" tabindex="0">
+            <div class="feature-icon blue">🔍</div>
+            <h3 class="feature-title">Smart Search</h3>
+            <p class="feature-desc">Find any product instantly with AI-powered search</p>
+        </div>
+        <div class="feature-card" id="card-aisle-nav" tabindex="0">
+            <div class="feature-icon purple">📍</div>
+            <h3 class="feature-title">Aisle Navigation</h3>
+            <p class="feature-desc">Get real-time directions to any product location</p>
+        </div>
+        <div class="feature-card" id="card-checkout" tabindex="0">
+            <div class="feature-icon teal">📋</div>
+            <h3 class="feature-title">Instant Checkout</h3>
+            <p class="feature-desc">Pay with UPI, Card or Digital Wallet in seconds</p>
+        </div>
+    </div>
+
+    <!-- Widgets Row -->
+    <div class="widgets-row">
+        <div class="widget cart-widget" id="home-cart-widget">
+            <div class="widget-icon">🛒</div>
+            <div class="widget-info">
+                <span class="widget-label">Cart Total</span>
+                <span class="widget-value" id="home-cart-total">₹0</span>
+            </div>
+            <div class="widget-meta">
+                <span id="home-cart-count">0 items</span>
+                <span class="tax-label">Tax incl.</span>
+            </div>
+        </div>
+        <div class="widget rfid-widget" id="rfid-widget">
+            <div class="widget-icon rfid-icon">🛡️</div>
+            <div class="widget-info">
+                <span class="widget-label">Security</span>
+                <span class="widget-value rfid-value" id="rfid-status">RFID Active</span>
+            </div>
+            <div class="widget-meta">
+                <span id="rfid-meta">All items monitored</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Browse Popular Products -->
+    <div class="browse-all-section">
+        <div class="browse-all-header">
+            <h3>🔥 Popular Products</h3>
+            <span id="browse-count">24 products</span>
+        </div>
+        <div class="category-tabs" id="category-tabs"></div>
+        <div class="browse-grid" id="browse-grid"></div>
+    </div>
+
+    <!-- CTA -->
+    <button class="cta-button" id="btn-start-shopping">
+        <span class="cta-icon">🛒</span>
+        <span class="cta-text">Start Shopping</span>
+        <span class="cta-arrow">›</span>
+    </button>
+    <p class="cta-hint">Tap a product or scan RFID to begin · All transactions are secured</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SCREEN 2 : FIND PRODUCTS                       -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="screen-search" class="screen">
+
+    <!-- Search Header -->
+    <div class="screen-header">
+        <button class="back-btn" data-back="home" aria-label="Go Back">
+            <span>←</span>
+        </button>
+        <div class="screen-header-text">
+            <h2>Find Products</h2>
+            <p>Search by name, brand or barcode</p>
+        </div>
+        <div class="header-actions">
+            <span class="header-clock" id="search-clock">📶 22:53</span>
+            <button class="cart-btn" id="btn-go-cart-from-search">
+                <span>🛒</span> Cart
+                <span class="cart-badge" id="search-cart-badge">0</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Step Indicator -->
+    <div class="step-indicator">
+        <div class="step active" data-step="1">
+            <span class="step-num">1</span>
+            <span class="step-label">Search</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" data-step="2">
+            <span class="step-num">2</span>
+            <span class="step-label">Add Items</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" data-step="3">
+            <span class="step-num">3</span>
+            <span class="step-label">Cart</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" data-step="4">
+            <span class="step-num">4</span>
+            <span class="step-label">Payment</span>
+        </div>
+    </div>
+
+    <!-- Search Input -->
+    <div class="search-section">
+        <div class="search-input-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="product-search-input" placeholder="e.g. Milk, Bread, Juice..." autocomplete="off">
+            <button class="search-action-btn" id="product-search-btn">🔍 Search</button>
+        </div>
+        <div class="suggestion-chips">
+            <span class="chip-label">Try:</span>
+            <button class="chip featured" data-term="Milk">✨ Milk</button>
+            <button class="chip" data-term="Bread">Bread</button>
+            <button class="chip" data-term="Eggs">Eggs</button>
+            <button class="chip" data-term="Butter">Butter</button>
+            <button class="chip" data-term="Rice">Rice</button>
+        </div>
+    </div>
+
+    <!-- Search Results Area -->
+    <div class="search-results-area" id="search-results-area">
+        <!-- Empty State -->
+        <div class="empty-state" id="search-empty-state">
+            <div class="empty-icon-wrap">
+                <div class="empty-circle"></div>
+                <span class="empty-icon">🔍</span>
+            </div>
+            <h3>Search for a product</h3>
+            <p>Type a product name above or tap <strong>"Milk"</strong> to try a demo search</p>
+        </div>
+        <!-- Results Grid (populated by JS) -->
+        <div class="results-grid" id="results-grid"></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SCREEN 3 : CART                                -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="screen-cart" class="screen">
+
+    <!-- Cart Header -->
+    <div class="screen-header">
+        <button class="back-btn" data-back="search" aria-label="Go Back">
+            <span>←</span>
+        </button>
+        <div class="screen-header-text">
+            <h2>Your Cart</h2>
+            <p id="cart-item-summary">0 items in your cart</p>
+        </div>
+        <div class="header-actions">
+            <span class="header-clock" id="cart-clock">📶 22:53</span>
+            <button class="clear-cart-btn" id="btn-clear-cart">🗑️ Clear</button>
+        </div>
+    </div>
+
+    <!-- Step Indicator -->
+    <div class="step-indicator">
+        <div class="step completed" data-step="1">
+            <span class="step-num">✓</span>
+            <span class="step-label">Search</span>
+        </div>
+        <div class="step-line active-line"></div>
+        <div class="step completed" data-step="2">
+            <span class="step-num">✓</span>
+            <span class="step-label">Add Items</span>
+        </div>
+        <div class="step-line active-line"></div>
+        <div class="step active" data-step="3">
+            <span class="step-num">3</span>
+            <span class="step-label">Cart</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" data-step="4">
+            <span class="step-num">4</span>
+            <span class="step-label">Payment</span>
+        </div>
+    </div>
+
+    <!-- Cart Items -->
+    <div class="cart-items-area" id="cart-items-area">
+        <div class="cart-empty-state" id="cart-empty-state">
+            <span class="cart-empty-icon">🛒</span>
+            <h3>Your cart is empty</h3>
+            <p>Go back and add some products!</p>
+            <button class="btn-secondary" id="btn-browse-products">Browse Products</button>
+        </div>
+        <div class="cart-list" id="cart-list"></div>
+    </div>
+
+    <!-- Cart Summary -->
+    <div class="cart-summary" id="cart-summary" style="display:none;">
+        <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="cart-subtotal">₹0</span>
+        </div>
+        <div class="summary-row">
+            <span>GST (5%)</span>
+            <span id="cart-tax">₹0</span>
+        </div>
+        <div class="summary-row discount-row" id="discount-row" style="display:none;">
+            <span>Discount</span>
+            <span id="cart-discount">-₹0</span>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-row total-row">
+            <span>Total</span>
+            <span id="cart-total">₹0</span>
+        </div>
+
+        <!-- Coupon Input -->
+        <div class="coupon-section">
+            <input type="text" id="coupon-input" placeholder="Enter coupon code">
+            <button class="coupon-btn" id="btn-apply-coupon">Apply</button>
+        </div>
+        <p class="coupon-msg" id="coupon-msg"></p>
+
+        <button class="cta-button checkout-btn" id="btn-checkout">
+            <span class="cta-icon">💳</span>
+            <span class="cta-text">Proceed to Payment</span>
+            <span class="cta-arrow">›</span>
+        </button>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SCREEN 4 : PAYMENT                             -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="screen-payment" class="screen">
+
+    <!-- Payment Header -->
+    <div class="screen-header">
+        <button class="back-btn" data-back="cart" aria-label="Go Back">
+            <span>←</span>
+        </button>
+        <div class="screen-header-text">
+            <h2>Payment</h2>
+            <p>Choose a payment method</p>
+        </div>
+        <div class="header-actions">
+            <span class="header-clock" id="payment-clock">📶 22:53</span>
+        </div>
+    </div>
+
+    <!-- Step Indicator -->
+    <div class="step-indicator">
+        <div class="step completed" data-step="1">
+            <span class="step-num">✓</span>
+            <span class="step-label">Search</span>
+        </div>
+        <div class="step-line active-line"></div>
+        <div class="step completed" data-step="2">
+            <span class="step-num">✓</span>
+            <span class="step-label">Add Items</span>
+        </div>
+        <div class="step-line active-line"></div>
+        <div class="step completed" data-step="3">
+            <span class="step-num">✓</span>
+            <span class="step-label">Cart</span>
+        </div>
+        <div class="step-line active-line"></div>
+        <div class="step active" data-step="4">
+            <span class="step-num">4</span>
+            <span class="step-label">Payment</span>
+        </div>
+    </div>
+
+    <!-- Payment Content -->
+    <div class="payment-content" id="payment-content">
+        <!-- Order Summary -->
+        <div class="payment-summary-card">
+            <h3>Order Summary</h3>
+            <div class="payment-summary-row">
+                <span>Items</span>
+                <span id="pay-item-count">0</span>
+            </div>
+            <div class="payment-summary-row">
+                <span>Subtotal</span>
+                <span id="pay-subtotal">₹0</span>
+            </div>
+            <div class="payment-summary-row">
+                <span>GST (5%)</span>
+                <span id="pay-tax">₹0</span>
+            </div>
+            <div class="payment-summary-row" id="pay-discount-row" style="display:none;">
+                <span>Discount</span>
+                <span id="pay-discount">-₹0</span>
+            </div>
+            <div class="summary-divider"></div>
+            <div class="payment-summary-row total-row">
+                <span>Total Payable</span>
+                <span id="pay-total">₹0</span>
+            </div>
+        </div>
+
+        <!-- Payment Methods -->
+        <div class="payment-methods">
+            <h3>Select Payment Method</h3>
+            <div class="payment-option selected" data-method="upi">
+                <div class="payment-option-radio"></div>
+                <div class="payment-option-icon">📱</div>
+                <div class="payment-option-info">
+                    <span class="payment-option-name">UPI</span>
+                    <span class="payment-option-desc">Google Pay, PhonePe, Paytm</span>
+                </div>
+            </div>
+            <div class="payment-option" data-method="card">
+                <div class="payment-option-radio"></div>
+                <div class="payment-option-icon">💳</div>
+                <div class="payment-option-info">
+                    <span class="payment-option-name">Credit / Debit Card</span>
+                    <span class="payment-option-desc">Visa, Mastercard, RuPay</span>
+                </div>
+            </div>
+            <div class="payment-option" data-method="wallet">
+                <div class="payment-option-radio"></div>
+                <div class="payment-option-icon">👛</div>
+                <div class="payment-option-info">
+                    <span class="payment-option-name">Digital Wallet</span>
+                    <span class="payment-option-desc">FreshMart Wallet, Amazon Pay</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="cta-button pay-now-btn" id="btn-pay-now">
+            <span class="cta-icon">🔒</span>
+            <span class="cta-text">Pay Now</span>
+            <span class="cta-arrow">›</span>
+        </button>
+    </div>
+
+    <!-- Payment Processing Modal -->
+    <div class="payment-processing" id="payment-processing" style="display:none;">
+        <div class="processing-spinner"></div>
+        <h3>Processing Payment...</h3>
+        <p>Please wait while we verify your payment</p>
+    </div>
+
+    <!-- Payment Success -->
+    <div class="payment-success" id="payment-success" style="display:none;">
+        <div class="success-icon-wrap">
+            <span class="success-icon">✅</span>
+        </div>
+        <h2>Payment Successful!</h2>
+        <p class="success-amount" id="success-amount">₹0</p>
+        <p class="success-method" id="success-method">Paid via UPI</p>
+        <div class="receipt-info">
+            <div class="receipt-row">
+                <span>Transaction ID</span>
+                <span id="txn-id">TXN-XXXXXXXX</span>
+            </div>
+            <div class="receipt-row">
+                <span>Date & Time</span>
+                <span id="txn-datetime">22 Mar 2026, 10:53 PM</span>
+            </div>
+        </div>
+        <button class="cta-button" id="btn-new-session">
+            <span class="cta-icon">🛒</span>
+            <span class="cta-text">New Shopping Session</span>
+            <span class="cta-arrow">›</span>
+        </button>
+        <button class="btn-secondary" id="btn-print-receipt" style="margin-top:12px;">🖨️ Print Receipt</button>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SCREEN 5 : INSTORE NAVIGATION                  -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="screen-navigation" class="screen">
+    <!-- Header -->
+    <div class="screen-header">
+        <button class="back-btn" data-back="home" aria-label="Go Back">
+            <span>←</span>
+        </button>
+        <div class="screen-header-text">
+            <h2>Store Navigation</h2>
+            <p>Find exact product locations in 3D map</p>
+        </div>
+        <div class="header-actions">
+            <span class="header-clock" id="nav-clock">📶 22:53</span>
+        </div>
+    </div>
+
+    <!-- Map Search -->
+    <div class="search-section">
+        <div class="search-input-wrap">
+            <span class="search-icon">📍</span>
+            <input type="text" id="map-search-input" placeholder="Search for a product or category to locate..." autocomplete="off">
+            <button class="search-action-btn" id="map-search-btn">Locate</button>
+        </div>
+        <p class="cta-hint" style="margin-top:12px; padding:0; text-align:left;">Or tap an aisle on the map below for details</p>
+    </div>
+
+    <!-- Store Map Layout -->
+    <div class="store-map-container">
+        <div class="store-map" id="store-map">
+            <!-- Top Walls -->
+            <div class="map-wall top-wall">Bakery & Dairy Chillers</div>
+            
+            <!-- Aisles Row 1 -->
+            <div class="map-shelf" data-location="A1"><span>A1</span><br><small>Dairy</small></div>
+            <div class="map-path vertical"></div>
+            <div class="map-shelf" data-location="B1"><span>B1</span><br><small>Poultry</small></div>
+            <div class="map-path vertical center-aisle"></div>
+            <div class="map-shelf" data-location="C1"><span>C1</span><br><small>Grains</small></div>
+            <div class="map-path vertical"></div>
+            <div class="map-shelf" data-location="D1"><span>D1</span><br><small>Fruits</small></div>
+
+            <!-- Horizontal Path -->
+            <div class="map-path horizontal cross-aisle"></div>
+
+            <!-- Aisles Row 2 -->
+            <div class="map-shelf" data-location="A2"><span>A2</span><br><small>Bakery</small></div>
+            <div class="map-path vertical"></div>
+            <div class="map-shelf" data-location="B2"><span>B2</span><br><small>Beverages</small></div>
+            <div class="map-path vertical center-aisle"></div>
+            <div class="map-shelf" data-location="C2"><span>C2</span><br><small>Pantry</small></div>
+            <div class="map-path vertical"></div>
+            <div class="map-shelf" data-location="D2"><span>D2</span><br><small>Snacks</small></div>
+
+            <!-- SVG Path Overlay -->
+            <svg class="map-path-svg" id="map-path-svg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+
+            <!-- Bottom Area -->
+            <div class="map-bottom-area">
+                <div class="map-checkout-zone">🛒 Checkout</div>
+                <div class="map-entrance-zone" id="map-entrance">
+                    <div class="you-are-here">📍 You are here</div>
+                    <span>Entrance / Exit</span>
+                </div>
+            </div>
+        </div>
+        <div class="map-info-panel" id="map-info-panel" style="display:none;">
+            <div class="map-info-icon" id="map-info-emoji">📍</div>
+            <div class="map-info-text">
+                <h4 id="map-info-title">Dairy</h4>
+                <p id="map-info-desc">Aisle A1</p>
+            </div>
+            <button id="map-info-close">✕</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
